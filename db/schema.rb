@@ -11,40 +11,35 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120216045511) do
-
-  create_table "task_statuses", :force => true do |t|
-    t.string   "status"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
+ActiveRecord::Schema.define(:version => 20120318005624) do
 
   create_table "tasks", :force => true do |t|
-    t.string   "name",           :limit => 512,  :null => false
-    t.string   "description",    :limit => 1064
-    t.integer  "task_status_id"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.string   "name",        :limit => 512,  :null => false
+    t.string   "description", :limit => 1064
+    t.date     "due_date"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+    t.string   "status"
   end
 
-  add_index "tasks", ["task_status_id"], :name => "FK_status_id"
-
   create_table "user_tasks", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.integer  "task_id",    :null => false
+    t.integer  "tasks_id"
+    t.integer  "users_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
-  add_index "user_tasks", ["task_id"], :name => "FK_task_id"
-  add_index "user_tasks", ["user_id"], :name => "FK_user_id"
-
   create_table "users", :force => true do |t|
-    t.string   "name",       :limit => 128, :null => false
-    t.string   "phone",      :limit => 15
-    t.string   "email",      :limit => 128, :null => false
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.string   "first_name",           :limit => 128, :null => false
+    t.string   "phone",                :limit => 15
+    t.string   "email",                :limit => 128, :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+    t.string   "encrypted_password"
+    t.string   "last_name"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
   end
 
 end

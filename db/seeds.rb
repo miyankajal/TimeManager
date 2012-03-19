@@ -7,4 +7,4 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 		
-task_statuses = TaskStatus.create([{status: 'new'}, {status: 'completed'}, {status: 'due'}, {status: 'deleted'}])
+#task_statuses = TaskStatus.create([{status: 'new'}, {status: 'completed'}, {status: 'due'}, {status: 'deleted'}])

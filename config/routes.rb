@@ -1,7 +1,16 @@
 TimeManager::Application.routes.draw do
+  devise_for :users
+
+  get "user_tasks/new"
+
+  get "user_tasks_controller/new"
+  get "users_controller/new"
+
+
   resources :users
   resources :tasks
   resources :task_statuses
+  resources :user_tasks
 
 	
   # The priority is based upon order of creation:

@@ -80,13 +80,40 @@ class TasksController < ApplicationController
       format.json { head :no_content }
     end
   end
-  
-  def show
-    @task = TaskStatus.find(:all, :select => "task_statuses.status, tasks.name", :joins => "INNER JOIN tasks ON tasks.task_status_id = task_statuses.id")
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { head :no_content }
-	end
- end
+  # Find 
+  	
+  def getAllTAsksForUser(user_id)
+		
+	@tasks = Task.find(:all,:joins => "INNER JOIN user_tasks ON user_tasks.tasks_id = tasks.id INNER JOIN users ON user_tasks.users_id = users.id",/
+			:select => 'tasks.name, tasks.description, tasks.status', :conditions => 'users.id = 16')
+  end
+  
+  def getTasksDueToday
+	@tasks = getAllTAsksForUser(params[:user_id])
+	@tasks = @tasks.where("due_date = ?", Date.today)
+  end
+  
+  def getEveryDayTasks
+	@tasks = getAllTAsksForUser(params[:user_id])
+	@tasks = @tasks.where("due_date IS NULL")
+  end
+  
+  def getPercentageTasksNotDone
+	
+  end
+  
+  def getTasksCompletedToday
+  end
+  
+  def getPercentageTasksCompletedToday
+  end
+  
+   # @task = Task.find(:all, :select => "task_statuses.status, tasks.name", :joins => "INNER JOIN task_statuses ON tasks.task_status_id = task_statuses.id")
+#Task.create(:name => 'John's stuff', :description => 'summa vetti', :task_status_id => 2)
+#User.find(:all)
+#Task.find(:all, :joins => "INNER JOIN user_tasks ON user_tasks.task_id = tasks.id INNER JOIN users ON user_tasks.user_id = users.id")
+  def tada
+  end
+  
 end

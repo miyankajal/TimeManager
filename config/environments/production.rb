@@ -19,6 +19,11 @@ TimeManager::Application.configure do
 
   # Generate digests for assets URLs
   config.assets.digest = true
+  
+  # Raise exception on mass assignment protection for Active Record models
+  config.active_record.mass_assignment_sanitizer = :strict
+  
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH

@@ -4,7 +4,8 @@ class CreateTasks < ActiveRecord::Migration
 	  t.integer :id, :null => false
 	  t.string :name, :limit => 512, :null => false
       t.string :description, :limit => 1064
-      t.integer :task_status_id
+	  t.date :due_date
+      #t.integer :task_status_id
 	
       t.timestamps
     end
