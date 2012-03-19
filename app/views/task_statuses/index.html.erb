@@ -1,0 +1,25 @@
+<h1>Listing task status</h1>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Status</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @task_statuses.each do |task_status| %>
+  <tr>
+    <td><%= task_status.id %></td>
+    <td><%= task_status.status %></td>
+    <td><%= link_to 'Show', task_status %></td>
+    <td><%= link_to 'Edit', edit_task_status_path(task_status) %></td>
+    <td><%= link_to 'Destroy', task_status, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New task_status', new_task_status_path %>
