@@ -4,6 +4,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable
 
+	has_many :user_tasks	
+	has_many :tasks, :through => :user_tasks
+	
+	email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+
+
   # Setup accessible (or protected) attributes for your model
 	validate :id, :presence => true
 	validate :last_name, :presence => true,
@@ -11,6 +17,8 @@ class User < ActiveRecord::Base
 	validate :first_name, :presence => true,
 		:length => { :maximum => 128 }
 	validate :email, :presence => true,
+		:format     => { :with => email_regex },
+		:uniqueness => { :case_sensitive => false },
 		:length => { :maximum => 128 }
 	validate :phone,
 		:length => { :maximum => 15 }
@@ -18,9 +26,8 @@ class User < ActiveRecord::Base
 		:confirmation => true,
 		:length       => { :within => 8..64 }
 	
-	has_many :user_tasks	
-	has_many :tasks, :through => :user_tasks
-
+	before_save :encrypt_password
+	
 	attr_accessor :password
 	attr_accessible :email, :password, :password_confirmation, :remember_me, :first_name, :last_name, :terms_of_use, :phone
 	attr_accessible :task_attributes
@@ -32,4 +39,39 @@ class User < ActiveRecord::Base
 	validates_format_of :last_name, :with => /^[a-zA-Z]+$/i, :message => "Numbers are not allowed. Only (a-z,A-Z) are allowed."
 	validates_uniqueness_of :email
 
+	def has_password?(submitted_password)
+		encrypted_password == encrypt(submitted_password)
+	end
+	
+	class << self
+    def authenticate(email, submitted_password)
+      user = find_by_email(email)
+      (user && user.has_password?(submitted_password)) ? user : nil
+    end
+    
+    def authenticate_with_salt(id, cookie_salt)
+      user = find_by_id(id)
+      (user && user.salt == cookie_salt) ? user : nil
+    end
+  end
+  
+  private
+  
+    def encrypt_password
+      self.salt = make_salt unless has_password?(password)
+      self.encrypted_password = encrypt(password)
+    end
+  
+    def encrypt(string)
+      secure_hash("#{salt}--#{string}")
+    end
+    
+    def make_salt
+      secure_hash("#{Time.now.utc}--#{password}")
+    end
+    
+    def secure_hash(string)
+      Digest::SHA2.hexdigest(string)
+    end
+	
 end

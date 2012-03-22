@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120318005624) do
+ActiveRecord::Schema.define(:version => 20120322003354) do
 
   create_table "tasks", :force => true do |t|
     t.string   "name",        :limit => 512,  :null => false
@@ -29,17 +29,25 @@ ActiveRecord::Schema.define(:version => 20120318005624) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "user_tasks", ["tasks_id"], :name => "index_user_tasks_on_tasks_id"
+  add_index "user_tasks", ["users_id", "tasks_id"], :name => "index_user_tasks_on_users_id_and_tasks_id", :unique => true
+  add_index "user_tasks", ["users_id"], :name => "index_user_tasks_on_users_id"
+
   create_table "users", :force => true do |t|
-    t.string   "first_name",           :limit => 128, :null => false
+    t.string   "first_name",           :limit => 128,                    :null => false
     t.string   "phone",                :limit => 15
-    t.string   "email",                :limit => 128, :null => false
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.string   "email",                :limit => 128,                    :null => false
+    t.datetime "created_at",                                             :null => false
+    t.datetime "updated_at",                                             :null => false
     t.string   "encrypted_password"
     t.string   "last_name"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+    t.string   "salt"
+    t.boolean  "admin",                               :default => false
   end
+
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
 
 end

@@ -22,6 +22,12 @@ class Task < ActiveRecord::Base
 		[status.to_sym]
 	end
 	
+	  	
+	def getAllTAsksForUser(user_id)
+		
+		@tasks = Task.find(:all,:joins => "INNER JOIN user_tasks ON user_tasks.tasks_id = tasks.id INNER JOIN users ON user_tasks.users_id = users.id",/
+			:select => 'tasks.name, tasks.description, tasks.status', :conditions => ['users.id = ?', user_id])
+	end
 	
 
 

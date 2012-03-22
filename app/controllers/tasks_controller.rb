@@ -82,20 +82,15 @@ class TasksController < ApplicationController
   end
 
   # Find 
-  	
-  def getAllTAsksForUser(user_id)
-		
-	@tasks = Task.find(:all,:joins => "INNER JOIN user_tasks ON user_tasks.tasks_id = tasks.id INNER JOIN users ON user_tasks.users_id = users.id",/
-			:select => 'tasks.name, tasks.description, tasks.status', :conditions => 'users.id = 16')
-  end
+
   
   def getTasksDueToday
-	@tasks = getAllTAsksForUser(params[:user_id])
+	@tasks = Task.getAllTAsksForUser(params[:user_id])
 	@tasks = @tasks.where("due_date = ?", Date.today)
   end
   
   def getEveryDayTasks
-	@tasks = getAllTAsksForUser(params[:user_id])
+	@tasks = Task.getAllTAsksForUser(params[:user_id])
 	@tasks = @tasks.where("due_date IS NULL")
   end
   
