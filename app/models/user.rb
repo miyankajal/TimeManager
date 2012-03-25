@@ -43,6 +43,35 @@ class User < ActiveRecord::Base
 		encrypted_password == encrypt(submitted_password)
 	end
 	
+	#was task created?
+	def task_created?(task)
+		self.tasks.include?(task)
+	end
+	
+	def find_new_tasks
+		Task.new_task(self)
+	end
+	
+	def find_completed_tasks
+		Task.completed_task(self)
+	end
+	
+	def find_due_tasks
+		Task.due_task(self)
+	end
+	
+	def find_deleted_tasks
+		Task.deleted_task(self)
+	end
+	
+	def craete_task!(tasks)
+		user_tasks.create!(:tasks_id => tasks.id)
+	end
+	
+	def destroy_task!(tasks)
+		user_tasks.find_by_tasks_id(tasks).destroy
+	end
+	
 	class << self
     def authenticate(email, submitted_password)
       user = find_by_email(email)

@@ -1,8 +1,12 @@
 class UsersController < ApplicationController
+
+  before_filter :authenticate, :only => [:index, :edit, :update, :destroy]
+  before_filter :correct_user, :only => [:edit, :update, :show, :destroy]
+  
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @users = User.paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -13,8 +17,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    @user = User.find(params[:id])
-
+	@tasks = @user.tasks.paginate(:page => params[:page])
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @user }
@@ -31,10 +34,31 @@ class UsersController < ApplicationController
       format.json { render json: @user }
     end
   end
+  
+  def create_task
+	  @user = User.find(params[:id])
+	  @task = Task.find(params[:id])
+	  
+	  #create task if task is not already created 
+	  unless @user.task_created?(@task)
+		@task.users << @users
+		format.html { redirect_to @user, notice: 'User Task was successfully created.' }
+        format.json { render json: @user, status: :created, location: @user }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+	  end
+  end
+  
+  #Display the tasks
+  def find_tasks
+	  @tasks = User.find(params[:id]).tasks
+  end
+  
 
   # GET /users/1/edit
   def edit
-    @user = User.find(params[:id])
+ 
   end
 
   # POST /users
@@ -56,7 +80,6 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.json
   def update
-    @user = User.find(params[:id])
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
@@ -72,7 +95,6 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user = User.find(params[:id])
     @user.destroy
 
     respond_to do |format|
@@ -80,4 +102,12 @@ class UsersController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  private
+
+    def correct_user
+      @user = User.find(params[:id])
+      redirect_to(root_path) unless current_user?(@user)
+    end
+  
 end

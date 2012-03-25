@@ -1,5 +1,5 @@
 class UserTask < ActiveRecord::Base
-	validate :id, :presence => true
+	
 	validate :tasks_id, :presence => true
 	validate :users_id, :presence => true
 		
